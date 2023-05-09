@@ -154,7 +154,7 @@ def main():
     bombs = [Bomb() for _ in range(NUM_OF_BOMBS)]
     beam = None
     beams =[]
-    score = 0 #スコアの合計
+    score = 0 #スコアの合計を0に設定する
     font = pg.font.SysFont("yumincho", 50)  #文字のフォント
 
     tmr = 0
@@ -192,7 +192,7 @@ def main():
                             del beams[j]
                             del bombs[i]
                             bird.change_img(6, screen)
-                            score += 1
+                            score += 1  #スコアを増やす
                             break
 
         pg.display.update()
