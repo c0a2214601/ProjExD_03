@@ -93,7 +93,7 @@ class Bomb:
     爆弾に関するクラス
     """
     _colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0), (255, 0, 255), (0, 255, 255)]
-    _dires = [-1, 0, +1]
+    _dires = [-1, +1]
     def __init__(self):
         """
         爆弾円Surfaceを生成する
@@ -153,6 +153,7 @@ def main():
     bird = Bird(3, (900, 400))
     bombs = [Bomb() for _ in range(NUM_OF_BOMBS)]
     beam = None
+    beams =[]
     score = 0 #スコアの合計
     font = pg.font.SysFont("yumincho", 50)  #文字のフォント
 
@@ -162,7 +163,7 @@ def main():
             if event.type == pg.QUIT:
                 return
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
-                beam = Beam(bird)
+                beams.append(Beam(bird))  #リストに追加
 
         tmr += 1
         screen.blit(bg_img, [0, 0])
@@ -182,15 +183,17 @@ def main():
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
 
-        if beam is not None:  # ビームが存在しているとき
-            beam.update(screen)
-            for i, bomb in enumerate(bombs):
-                if beam._rct.colliderect(bomb._rct):
-                    beam = None
-                    del bombs[i]
-                    bird.change_img(6, screen)
-                    score += 1
-                    break
+        for beam in beams:
+            if beam is not None:  # ビームが存在しているとき
+                beam.update(screen)
+                for i, bomb in enumerate(bombs):
+                    for j, beam in enumerate(beams):
+                        if beam._rct.colliderect(bomb._rct):
+                            del beams[j]
+                            del bombs[i]
+                            bird.change_img(6, screen)
+                            score += 1
+                            break
 
         pg.display.update()
         clock.tick(1000)
